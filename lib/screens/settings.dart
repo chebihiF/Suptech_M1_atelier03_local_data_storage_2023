@@ -1,3 +1,5 @@
+import 'package:atelier03_local_data_storage/data/shared_prefs.dart';
+import 'package:atelier03_local_data_storage/models/font_size.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -17,6 +19,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     0xFFF57C00,
     0xFF795548
   ];
+  SPSettings settings = SPSettings();
+  final List<FontSize> fontSizes = [
+    FontSize('small', 12),
+    FontSize('medium', 16),
+    FontSize('large', 20),
+    FontSize('extra-large', 24)
+  ];
+
+  @override
+  void initState() {
+    settings.init().then((value) {
+      setState(() {
+        settingColor = settings.getColor();
+        fontSize = settings.getFontSize();
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +48,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text('App Main Color'),
+          Text(
+            'Choose a font size for the App',
+            style: TextStyle(
+              fontSize: fontSize,
+            ),
+          ),
+          DropdownButton(
+              items: getDropdownMenuItems(),
+              value: fontSize.toString(),
+              onChanged: changeSize),
+          const Text('App Main Color'),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -62,6 +92,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void setColor(int color) {
     setState(() {
       settingColor = color;
+      settings.setColor(color);
+    });
+  }
+
+  List<DropdownMenuItem<String>> getDropdownMenuItems() {
+    List<DropdownMenuItem<String>> items = [];
+    for (FontSize fontSize in fontSizes) {
+      items.add(DropdownMenuItem(
+        value: fontSize.size.toString(),
+        child: Text(fontSize.name),
+      ));
+    }
+    return items;
+  }
+
+  void changeSize(String? newSize) {
+    setState(() {
+      fontSize = double.parse(newSize ?? '16');
+      settings.setFontSize(double.parse(newSize ?? '16'));
     });
   }
 }
@@ -71,12 +120,11 @@ class ColorSquare extends StatelessWidget {
   ColorSquare(this.colorCode);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           color: Color(colorCode)),
     );
   }
