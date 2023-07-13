@@ -1,3 +1,4 @@
+import 'package:atelier03_local_data_storage/screens/home.dart';
 import 'package:atelier03_local_data_storage/screens/settings.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity),
-        home: SettingsScreen());
+        home: HomeScreen());
   }
 }
