@@ -18,7 +18,7 @@ class SembastDb {
   }
 
   Future<Database> init() async {
-    _db ??= await _openDb();
+    _db = await _openDb();
     return _db;
   }
 
@@ -35,6 +35,7 @@ class SembastDb {
   }
 
   Future getPasswords() async {
+    await init();
     final finder = Finder(sortOrders: [SortOrder('name')]);
     final snapshot = await store.find(_db, finder: finder);
     return snapshot.map((item) {

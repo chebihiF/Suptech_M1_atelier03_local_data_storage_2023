@@ -10,11 +10,14 @@ class PasswordsScreen extends StatefulWidget {
 }
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
+  late SembastDb db;
   int settingColor = 0xff1976d2;
   double fontSize = 16;
-  SPSettings settings = SPSettings();
+  late SPSettings settings;
   @override
   void initState() {
+    db = SembastDb();
+    settings = SPSettings();
     settings.init().then((value) {
       setState(() {
         settingColor = settings.getColor();
@@ -31,7 +34,37 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
         title: Text('Passwords List'),
         backgroundColor: Color(settingColor),
       ),
-      body: Container(),
+      body: FutureBuilder(
+        future: getPasswords(),
+        builder: ((BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          List<Password> passwords = snapshot.data ?? [];
+          return ListView.builder(
+            itemCount: passwords == null ? 0 : passwords.length,
+            itemBuilder: (_, index) {
+              return Dismissible(
+                  key: Key(passwords[index].id.toString()),
+                  onDismissed: (_) {
+                    db.deletePassword(passwords[index]);
+                  },
+                  child: ListTile(
+                    title: Text(
+                      passwords[index].name,
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    trailing: Icon(Icons.edit),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return PasswordDetailDialog(
+                                passwords[index], false);
+                          });
+                    },
+                  ));
+            },
+          );
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           backgroundColor: Color(settingColor),
@@ -43,5 +76,10 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                 });
           }),
     );
+  }
+
+  Future<List<Password>> getPasswords() async {
+    List<Password> passwords = await db.getPasswords();
+    return passwords;
   }
 }

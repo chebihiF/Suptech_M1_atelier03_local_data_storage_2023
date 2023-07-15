@@ -10,8 +10,8 @@ class Password {
   }
 
   Password.fromMap(Map<String, dynamic> map) {
-    id = map[id];
-    name = map[name];
-    password = map[password];
+    id = map['id'];
+    name = map['name'];
+    password = map['password'];
   }
 }
