@@ -1,3 +1,4 @@
+import 'package:atelier03_local_data_storage/data/sembast_codec.dart';
 import 'package:atelier03_local_data_storage/models/password.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
@@ -8,7 +9,7 @@ class SembastDb {
   DatabaseFactory dbFactory = databaseFactoryIo;
   late Database _db;
   final store = intMapStoreFactory.store('password');
-
+  var codec = getEncryptSembastCodec(password: 'password');
   static SembastDb _singleton = SembastDb._internal();
 
   SembastDb._internal() {}
@@ -25,7 +26,7 @@ class SembastDb {
   Future _openDb() async {
     final docsDir = await getApplicationDocumentsDirectory();
     final dbPath = join(docsDir.path, 'pass.db');
-    final db = await dbFactory.openDatabase(dbPath);
+    final db = await dbFactory.openDatabase(dbPath, codec: codec);
     return db;
   }
 
