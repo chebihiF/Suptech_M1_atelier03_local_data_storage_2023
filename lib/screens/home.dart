@@ -1,3 +1,5 @@
+import 'package:atelier03_local_data_storage/screens/note.dart';
+import 'package:atelier03_local_data_storage/screens/notes.dart';
 import 'package:flutter/material.dart';
 import '../data/shared_prefs.dart';
 import '../screens/passwords.dart';
@@ -70,6 +72,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => PasswordsScreen()));
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    'Notes',
+                    style: TextStyle(
+                      fontSize: fontSize,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => NotesScreen()));
                   },
                 ),
               ],
